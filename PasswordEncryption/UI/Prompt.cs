@@ -8,8 +8,9 @@ namespace PasswordEncryption.UI
     {
         const int _maxUsernameLength = 20;
 
-        public const char PasswordMaskChar = '*';
+        public const char PasswordMask = '*';
         public const string ContinuePrompt = "<ENTER>...";
+        public const string ExitPrompt = "Are your sure? [y/n] ";
         public const string OptionPrompt = "Enter option: ";
         public const string NewUsernamePrompt = "Enter a username: ";
         public const string NewPasswordPrompt = "Enter a password: ";
@@ -20,10 +21,8 @@ namespace PasswordEncryption.UI
 
         public static MenuOption PromptMenuOption(string prompt)
         {
-            string input;
-
             Console.Write(prompt);
-            input = Console.ReadLine();
+            string input = Console.ReadLine();
 
             if (!int.TryParse(input, out int chosenOption))
                 throw new ArgumentException($"'{input}' not a valid menu option");
@@ -37,10 +36,8 @@ namespace PasswordEncryption.UI
 
         public static string PromptUsername(string prompt)
         {
-            string username;
-
             Console.Write(prompt);
-            username = Console.ReadLine();
+            string username = Console.ReadLine();
 
             if (username.Length > _maxUsernameLength)
                 throw new ArgumentException(
@@ -52,30 +49,30 @@ namespace PasswordEncryption.UI
         // MDMoore313 https://stackoverflow.com/questions/3404421/password-masking-console-application
         public static string PromptPassword(string prompt)
         {
-            List<char> passwordChars = new List<char>();
+            List<char> keysEntered = new List<char>();
             Console.Write(prompt);
-            ConsoleKeyInfo key;
+            ConsoleKeyInfo keyPress;
 
             do
             {
-                key = Console.ReadKey(true);
+                keyPress = Console.ReadKey(true);
 
-                // Backspace should not work
-                if (!char.IsControl(key.KeyChar))
+                // Prevent control characters from being written to the password
+                if (!char.IsControl(keyPress.KeyChar))
                 {
-                    passwordChars.Add(key.KeyChar);
-                    Console.Write(PasswordMaskChar);
+                    keysEntered.Add(keyPress.KeyChar);
+                    Console.Write(PasswordMask);
                 }
-                else if (key.Key == ConsoleKey.Backspace && passwordChars.Count > 0)
+                else if (keyPress.Key == ConsoleKey.Backspace && keysEntered.Count > 0)
                 {
-                    passwordChars.RemoveAt(passwordChars.Count - 1);
+                    keysEntered.RemoveAt(keysEntered.Count - 1);
                     Console.Write("\b \b");
                 }
             }
-            while (key.Key != ConsoleKey.Enter);
+            while (keyPress.Key != ConsoleKey.Enter);
             Console.Write("\n");
 
-            return passwordChars.Stringify().ToSHA256Hash();
+            return keysEntered.Stringify().ToSHA256Hash();
         }
 
         public static void PromptContinue()
@@ -84,5 +81,20 @@ namespace PasswordEncryption.UI
             Console.ReadLine();
         }
 
+        public static bool PromptExit()
+        {
+            Console.Write(ExitPrompt);
+            string wantsToContinue = Console.ReadLine().ToLower();
+            
+            switch (wantsToContinue)
+            {
+                case "y":
+                    return true;
+                case "n":
+                    return false;
+                default:
+                    throw new ArgumentException("Enter either 'y' or 'n'");
+            }
+        }
     }
 }

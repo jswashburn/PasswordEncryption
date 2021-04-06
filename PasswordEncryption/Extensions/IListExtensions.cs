@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace PasswordEncryption.Extensions
 {
@@ -6,11 +7,11 @@ namespace PasswordEncryption.Extensions
     {
         public static string Stringify<T>(this IList<T> original)
         {
-            string s = "";
+            StringBuilder stringBuilder = new StringBuilder();
             foreach (T item in original)
-                s += item.ToString();
+                stringBuilder.Append(item);
 
-            return s;
+            return stringBuilder.ToString();
         }
     }
 }

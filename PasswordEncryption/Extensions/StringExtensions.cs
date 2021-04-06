@@ -8,7 +8,7 @@ namespace PasswordEncryption.Extensions
     {
         public static string ToSHA256Hash(this string original)
         {
-            string formatted = "";
+            StringBuilder stringBuilder = new StringBuilder();
             byte[] hashed;
 
             using (SHA256 sha256 = SHA256.Create())
@@ -18,9 +18,9 @@ namespace PasswordEncryption.Extensions
             }
 
             foreach (byte hashedByte in hashed)
-                formatted += hashedByte.ToString("x2");
+                stringBuilder.Append(hashedByte.ToString("x2"));
 
-            return formatted;
+            return stringBuilder.ToString();
         }
         public static void WriteLineColored(this string original, ConsoleColor color)
         {

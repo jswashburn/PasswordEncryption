@@ -11,7 +11,11 @@ namespace PasswordEncryption
         {
             [MenuOption.Establish] = AccountManager.CreateAccount,
             [MenuOption.Authenticate] = AccountManager.AuthenticateAccount,
-            [MenuOption.Exit] = () => Environment.Exit(0)
+            [MenuOption.Exit] = () =>
+            {
+                if (Prompt.PromptExit())
+                    Environment.Exit(0);
+            }
         };
 
         static void Main(string[] args)
