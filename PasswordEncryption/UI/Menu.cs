@@ -1,4 +1,6 @@
-﻿namespace PasswordEncryption.UI
+﻿using System.Text;
+
+namespace PasswordEncryption.UI
 {
     public enum MenuOption
     {
@@ -37,13 +39,13 @@
         {
             get
             {
-                string options = "";
+                StringBuilder mainMenuOptions = new StringBuilder();
                 for (int i = 0; i < _mainMenuOptions.Length; i++)
                 {
                     string menuOption = _mainMenuOptions[i];
-                    options += $"\n {i + 1}. {menuOption}";
+                    mainMenuOptions.Append($"\n {i + 1}. {menuOption}");
                 }
-                return $"{hr}\n{_titleMain}\n{options}\n{hr}\n\n";
+                return $"{hr}\n{_titleMain}\n{mainMenuOptions}\n{hr}\n\n";
             }
         }
     }
